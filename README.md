@@ -147,5 +147,3 @@ All CRUD operations should return proper HTTP status codes such as:
 - `200 OK`
 - `400 Bad Request`
 - `404 Not Found`
-
----
