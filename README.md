@@ -149,8 +149,3 @@ All CRUD operations should return proper HTTP status codes such as:
 - `404 Not Found`
 
 ---
-
-## Author
-
-**Digi**  
-Computer Science Student
