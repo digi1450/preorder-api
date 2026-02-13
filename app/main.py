@@ -67,3 +67,42 @@ def delete_menu_item(item_id: int, db: Session = Depends(get_db)):
         raise HTTPException(status_code=404, detail="Menu item not found")
     crud.delete_menu_item(db, item)
     return
+
+@app.post("/orders", response_model=schemas.OrderOut, status_code=201)
+def create_order(payload: schemas.OrderCreate, db: Session = Depends(get_db)):
+    try:
+        return crud.create_order(db, payload)
+    except ValueError as e:
+        raise HTTPException(status_code=400, detail=str(e))
+
+
+@app.get("/orders", response_model=list[schemas.OrderOut])
+def list_orders(status: str | None = None, db: Session = Depends(get_db)):
+    return crud.list_orders(db, status=status)
+
+
+@app.get("/orders/{order_id}", response_model=schemas.OrderOut)
+def get_order(order_id: int, db: Session = Depends(get_db)):
+    order = crud.get_order(db, order_id)
+    if not order:
+        raise HTTPException(status_code=404, detail="Order not found")
+    return order
+
+
+@app.patch("/orders/{order_id}", response_model=schemas.OrderOut)
+def update_order(order_id: int, payload: schemas.OrderUpdate, db: Session = Depends(get_db)):
+    order = crud.get_order(db, order_id)
+    if not order:
+        raise HTTPException(status_code=404, detail="Order not found")
+    try:
+        return crud.update_order(db, order, payload)
+    except ValueError as e:
+        raise HTTPException(status_code=400, detail=str(e))
+
+
+@app.post("/orders/{order_id}/cancel", response_model=schemas.OrderOut)
+def cancel_order(order_id: int, db: Session = Depends(get_db)):
+    order = crud.get_order(db, order_id)
+    if not order:
+        raise HTTPException(status_code=404, detail="Order not found")
+    return crud.cancel_order(db, order)
